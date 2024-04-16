@@ -37,4 +37,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   Cincinnati_real_estate_sales:
+    staging:
+          materialized: view
+    core:
+          materialized: table
     
