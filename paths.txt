@@ -1,3 +1,9 @@
 dbt Docs: https://cloud.getdbt.com/accounts/247251/jobs/576187/docs/#!/overview
 
 Google Studio Dashboard: https://lookerstudio.google.com/reporting/6cc16853-ad16-4062-8a51-fb85479aa127
+
+About dataset: - https://data.ct.gov/Housing-and-Development/Real-Estate-Sales-2001-2021-GL/5mzw-sjtu/about_data
+- https://data.ct.gov/Housing-and-Development/All-Transactions-House-Price-Index-for-Connecticut/kf98-j89e/about_data
+
+Download site - https://catalog.data.gov/dataset/real-estate-sales-2001-2018
+- https://catalog.data.gov/dataset/fhfa-house-price-indexes-hpis-948c6
