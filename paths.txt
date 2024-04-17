@@ -1,0 +1,3 @@
+dbt Docs: https://cloud.getdbt.com/accounts/247251/jobs/576187/docs/#!/overview
+
+Google Studio Dashboard: https://lookerstudio.google.com/reporting/6cc16853-ad16-4062-8a51-fb85479aa127
