@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: staging
+    database: de-zoomcamp-416715
+    schema: Real_Estate_Sales_project_bq
+
+    tables:
+      - name: Real_estate_sales_data        
+ 
