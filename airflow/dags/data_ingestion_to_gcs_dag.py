@@ -8,18 +8,19 @@ from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
+import pyarrow as pa
 import pyarrow.csv as pv
 import pyarrow.parquet as pq
+import pandas as pd
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
 
-dataset_file = "Real_Estate_Sales.csv"
+dataset_file = "Real_Estate_Sales_raw.csv"
 dataset_url = f"https://data.ct.gov/api/views/5mzw-sjtu/rows.csv?accessType=DOWNLOAD"
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 parquet_file = dataset_file.replace('.csv', '.parquet')
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'Real_Estate_Sales_project_bq')
-
 
 def format_to_parquet(src_file):
     if not src_file.endswith('.csv'):
@@ -28,8 +29,6 @@ def format_to_parquet(src_file):
     table = pv.read_csv(src_file)
     pq.write_table(table, src_file.replace('.csv', '.parquet'))
 
-
-# NOTE: takes 20 mins, at an upload speed of 800kbps. Faster if your internet has a better upload speed
 def upload_to_gcs(bucket, object_name, local_file):
     """
     Ref: https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
@@ -60,7 +59,7 @@ default_args = {
 
 # NOTE: DAG declaration - using a Context Manager (an implicit way)
 with DAG(
-    dag_id="data_ingestion_gcs_dag",
+    dag_id="data_ingestion_to_gcs_dag",
     schedule_interval="@daily",
     default_args=default_args,
     catchup=False,
@@ -73,7 +72,7 @@ with DAG(
         bash_command=f"curl -sSL {dataset_url} > {path_to_local_home}/{dataset_file}"
     )
 
-    format_to_parquet_task = PythonOperator(
+    Extract_and_transform_to_pq_task = PythonOperator(
         task_id="format_to_parquet_task",
         python_callable=format_to_parquet,
         op_kwargs={
@@ -81,13 +80,12 @@ with DAG(
         },
     )
 
-    # TODO: Homework - research and try XCOM to communicate output values between 2 tasks/operators
     local_to_gcs_task = PythonOperator(
         task_id="local_to_gcs_task",
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"raw/{parquet_file}",
+            "object_name": f"Cleaned/{parquet_file}",
             "local_file": f"{path_to_local_home}/{parquet_file}",
         },
     )
@@ -102,9 +100,9 @@ with DAG(
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/raw/{parquet_file}"],
+                "sourceUris": [f"gs://{BUCKET}/Cleaned/{parquet_file}"],
             },
         },
     )
 
-    download_dataset_task >> format_to_parquet_task >> local_to_gcs_task >> bigquery_external_table_task
+    download_dataset_task >> Extract_and_transform_to_pq_task >> local_to_gcs_task >> bigquery_external_table_task
