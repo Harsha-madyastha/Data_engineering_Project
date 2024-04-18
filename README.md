@@ -38,7 +38,7 @@ For detailed instructions, refer to the respective sections in the README file p
 
 ## Dashboard
 
-! [Cincinnati housing sales dashboard] (https://github.com/Harsha-madyastha/Data_engineering_Project/blob/main/Dashboard/Cincinnati%20housing%20sales%20dashboard.PNG)
+! [Cincinnati housing sales dashboard](https://github.com/Harsha-madyastha/Data_engineering_Project/blob/main/Dashboard/Cincinnati%20housing%20sales%20dashboard.PNG)
 
 ## Contact
 For any questions or inquiries, feel free to open a pull request or [contact through mail] (harsha.manjunath1996@gmail.com).
